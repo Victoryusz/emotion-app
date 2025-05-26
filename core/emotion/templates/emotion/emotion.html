@@ -33,7 +33,7 @@
 
     <!-- COLAPSÁVEL: Histórico dos últimos sentimentos -->
     <div class="card shadow-sm mx-auto" style="max-width: 700px;">
-        <div class="card-header text-center">
+        <div class="card-header text-center ">
             <button class="btn btn-outline-light fw-bold" type="button"
                     data-bs-toggle="collapse" data-bs-target="#historicoSentimentos"
                     aria-expanded="false" aria-controls="historicoSentimentos">
@@ -44,11 +44,11 @@
             <ul class="list-group list-group-flush">
                 {% for entry in entries %}
                     {% with moods|dict_get:entry.mood as mood_data %}
-                        <li class="list-group-item bg-dark text-white text-center">
+                    <li class="list-group-item bg-dark text-white text-center rounded-3 my-1 shadow-sm">
                             <strong>
                                 {{ entry.created_at|date:"d \\d\\e M" }}, {{ entry.created_at|time:"H\\hi" }}
                             </strong>:
-                            <span class="badge bg-{{ mood_data.btn }} text-dark">
+                            <span class="badge bg-{{ mood_data.btn }} text-dark rounded-pill px-3 py-2">
                                 {{ mood_data.emoji }} {{ entry.mood|title }}
                             </span>
                         </li>
@@ -73,15 +73,15 @@
         <ul class="list-group list-group-flush">
             {% for date, mood in daily_summary.items %}
                 {% with moods|dict_get:mood as mood_data %}
-                    <li class="list-group-item bg-dark text-white text-center">
+                <li class="list-group-item bg-dark text-white text-center rounded-3 my-1 shadow-sm">
                         <strong>{{ date|date:"d/m" }}</strong> – Estava mais
-                        <span class="badge bg-{{ mood_data.btn }} text-dark">
+                        <span class="badge bg-{{ mood_data.btn }} text-dark rounded-pill px-3 py-2">
                             {{ mood_data.emoji }} {{ mood|title }}
                         </span>
                     </li>
                 {% endwith %}
             {% empty %}
-                <li class="list-group-item text-muted text-center">Ainda sem registros suficientes.</li>
+                <li class="list-group-item text-muted text-center rounded-3 my-1 shadow-sm">Ainda sem registros suficientes.</li>
             {% endfor %}
         </ul>
     </div>
