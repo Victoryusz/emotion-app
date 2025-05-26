@@ -94,6 +94,9 @@
         </div>
     </div>
 </div>
+        <button onclick="testNotify()" class="btn btn-outline-warning mt-4 mx-auto d-block">
+        🔔 Testar Notificação
+        </button>
 
 <!-- BOTÃO FIXO: Instalar App -->
 <button id="installBtn"
@@ -158,6 +161,28 @@
     });
   }
 </script>
+
+<!-- Notification -->
+<script>
+    if ("Notification" in window) {
+        Notification.requestPermission().then(permission => {
+          console.log("🔔 Permissão de notificação:", permission);
+        });
+      }
+</script>
+<!--Notificação real -->
+<script>
+    function testNotify() {
+        if (Notification.permission === "granted") {
+          new Notification("🌤️ Como você está se sentindo agora?", {
+            body: "Toque para registrar sua emoção diária!",
+            icon: "/static/img/icon-192.png"
+          });
+        } else {
+          alert("Notificações não permitidas ainda.");
+        }
+      }
+</script>      
 
 </body>
 </html>
