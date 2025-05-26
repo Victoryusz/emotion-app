@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'emotion', # App for emotion tracking
     'pwa', # Progressive Web App support
+    "django_celery_beat" # For periodic tasks
 ]
 
 MIDDLEWARE = [
