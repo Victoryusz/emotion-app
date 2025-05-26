@@ -2,11 +2,16 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <link rel="icon" type="image/png" href="/static/img/icon-192.png">
     <meta charset="UTF-8">
     <title>Emotion Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Bootswatch Vapor Theme (Dark) -->
     <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.3/dist/vapor/bootstrap.min.css" rel="stylesheet">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#121212">
 </head>
 <body class="bg-dark text-white">
 
@@ -33,7 +38,7 @@
 
     <!-- COLAPSÁVEL: Histórico dos últimos sentimentos -->
     <div class="card shadow-sm mx-auto" style="max-width: 700px;">
-        <div class="card-header text-center ">
+        <div class="card-header text-center">
             <button class="btn btn-outline-light fw-bold" type="button"
                     data-bs-toggle="collapse" data-bs-target="#historicoSentimentos"
                     aria-expanded="false" aria-controls="historicoSentimentos">
@@ -45,13 +50,13 @@
                 {% for entry in entries %}
                     {% with moods|dict_get:entry.mood as mood_data %}
                     <li class="list-group-item bg-dark text-white text-center rounded-3 my-1 shadow-sm">
-                            <strong>
-                                {{ entry.created_at|date:"d \\d\\e M" }}, {{ entry.created_at|time:"H\\hi" }}
-                            </strong>:
-                            <span class="badge bg-{{ mood_data.btn }} text-dark rounded-pill px-3 py-2">
-                                {{ mood_data.emoji }} {{ entry.mood|title }}
-                            </span>
-                        </li>
+                        <strong>
+                            {{ entry.created_at|date:"d \\d\\e M" }}, {{ entry.created_at|time:"H\\hi" }}
+                        </strong>:
+                        <span class="badge bg-{{ mood_data.btn }} text-dark rounded-pill px-3 py-2">
+                            {{ mood_data.emoji }} {{ entry.mood|title }}
+                        </span>
+                    </li>
                     {% endwith %}
                 {% empty %}
                     <li class="list-group-item text-muted text-center">Nenhum sentimento registrado ainda.</li>
@@ -61,33 +66,62 @@
     </div>
 
     <!-- COLAPSÁVEL: Histórico Diário -->
-<div class="card shadow-sm mx-auto mt-4" style="max-width: 700px;">
-    <div class="card-header text-center">
-        <button class="btn btn-outline-light fw-bold" type="button"
-                data-bs-toggle="collapse" data-bs-target="#historicoDiario"
-                aria-expanded="false" aria-controls="historicoDiario">
-            📊 Histórico Diário
-        </button>
-    </div>
-    <div class="collapse" id="historicoDiario">
-        <ul class="list-group list-group-flush">
-            {% for date, mood in daily_summary.items %}
-                {% with moods|dict_get:mood as mood_data %}
-                <li class="list-group-item bg-dark text-white text-center rounded-3 my-1 shadow-sm">
+    <div class="card shadow-sm mx-auto mt-4" style="max-width: 700px;">
+        <div class="card-header text-center">
+            <button class="btn btn-outline-light fw-bold" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#historicoDiario"
+                    aria-expanded="false" aria-controls="historicoDiario">
+                📊 Histórico Diário
+            </button>
+        </div>
+        <div class="collapse" id="historicoDiario">
+            <ul class="list-group list-group-flush">
+                {% for date, mood in daily_summary.items %}
+                    {% with moods|dict_get:mood as mood_data %}
+                    <li class="list-group-item bg-dark text-white text-center rounded-3 my-1 shadow-sm">
                         <strong>{{ date|date:"d/m" }}</strong> – Estava mais
                         <span class="badge bg-{{ mood_data.btn }} text-dark rounded-pill px-3 py-2">
                             {{ mood_data.emoji }} {{ mood|title }}
                         </span>
                     </li>
-                {% endwith %}
-            {% empty %}
-                <li class="list-group-item text-muted text-center rounded-3 my-1 shadow-sm">Ainda sem registros suficientes.</li>
-            {% endfor %}
-        </ul>
+                    {% endwith %}
+                {% empty %}
+                    <li class="list-group-item text-muted text-center rounded-3 my-1 shadow-sm">
+                        Ainda sem registros suficientes.
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 </div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Service Worker (PWA) -->
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register("/static/serviceworker.js")
+      .then(reg => console.log("✔️ ServiceWorker registrado:", reg.scope))
+      .catch(err => console.error("❌ Falha ao registrar SW:", err));
+  }
+</script>
+
+<!-- LocalStorage: manter estado do colapsável -->
+<script>
+  const collapseEl = document.getElementById('historicoSentimentos');
+  const bsCollapse = new bootstrap.Collapse(collapseEl, { toggle: false });
+
+  const savedState = localStorage.getItem('historicoSentimentosOpen');
+  if (savedState === 'true') bsCollapse.show();
+
+  collapseEl.addEventListener('shown.bs.collapse', () => {
+    localStorage.setItem('historicoSentimentosOpen', 'true');
+  });
+  collapseEl.addEventListener('hidden.bs.collapse', () => {
+    localStorage.setItem('historicoSentimentosOpen', 'false');
+  });
+</script>
+
 </body>
 </html>
