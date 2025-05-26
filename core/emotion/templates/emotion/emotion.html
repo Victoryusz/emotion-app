@@ -60,6 +60,33 @@
         </div>
     </div>
 
+    <!-- COLAPSÁVEL: Histórico Diário -->
+<div class="card shadow-sm mx-auto mt-4" style="max-width: 700px;">
+    <div class="card-header text-center">
+        <button class="btn btn-outline-light fw-bold" type="button"
+                data-bs-toggle="collapse" data-bs-target="#historicoDiario"
+                aria-expanded="false" aria-controls="historicoDiario">
+            📊 Histórico Diário
+        </button>
+    </div>
+    <div class="collapse" id="historicoDiario">
+        <ul class="list-group list-group-flush">
+            {% for date, mood in daily_summary.items %}
+                {% with moods|dict_get:mood as mood_data %}
+                    <li class="list-group-item bg-dark text-white text-center">
+                        <strong>{{ date|date:"d/m" }}</strong> – Estava mais
+                        <span class="badge bg-{{ mood_data.btn }} text-dark">
+                            {{ mood_data.emoji }} {{ mood|title }}
+                        </span>
+                    </li>
+                {% endwith %}
+            {% empty %}
+                <li class="list-group-item text-muted text-center">Ainda sem registros suficientes.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
