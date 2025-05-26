@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'emotion',
+    'emotion', # App for emotion tracking
+    'pwa', # Progressive Web App support
 ]
 
 MIDDLEWARE = [
@@ -118,7 +119,40 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+PWA_APP_NAME = 'Emotion Tracker'
+PWA_APP_DESCRIPTION = "Rastreie seu humor diariamente"
+PWA_APP_THEME_COLOR = '#121212'
+PWA_APP_BACKGROUND_COLOR = '#121212'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'portrait'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': '/static/img/icon-192.png',
+        'sizes': '192x192'
+    },
+    {
+        'src': '/static/img/icon-512.png',
+        'sizes': '512x512'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        "src": "/static/img/icon-192.png",
+        "sizes": "192x192"
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'pt-BR'
