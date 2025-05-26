@@ -1,3 +1,4 @@
+{% load dict_extras %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -17,12 +18,12 @@
     <div class="card shadow-sm mb-4 mx-auto" style="max-width: 400px;">
         <div class="card-body">
             <div class="d-flex flex-column align-items-center gap-2">
-                {% for mood in moods %}
+                {% for mood, props in moods.items %}
                     <form method="post" class="w-100">
                         {% csrf_token %}
                         <input type="hidden" name="mood" value="{{ mood }}">
-                        <button type="submit" class="btn btn-outline-primary btn-lg w-100 text-capitalize">
-                            {{ mood }}
+                        <button type="submit" class="btn btn-{{ props.btn }} btn-lg w-100 text-capitalize fw-bold">
+                            {{ props.emoji }} {{ mood }}
                         </button>
                     </form>
                 {% endfor %}
@@ -30,25 +31,36 @@
         </div>
     </div>
 
-
-    <!-- LISTA DE SENTIMENTOS -->
-    <div class="card shadow-sm mx-auto" style="max-width: 500px;">
+    <!-- COLAPSÁVEL: Histórico dos últimos sentimentos -->
+    <div class="card shadow-sm mx-auto" style="max-width: 700px;">
         <div class="card-header text-center">
-            <h5 class="mb-0">🕒 Histórico</h5>
+            <button class="btn btn-outline-light fw-bold" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#historicoSentimentos"
+                    aria-expanded="false" aria-controls="historicoSentimentos">
+                🕒 Últimos Sentimentos
+            </button>
         </div>
-        <ul class="list-group list-group-flush">
-            {% for entry in entries %}
-                <li class="list-group-item text-center">
-                    <strong>{{ entry.created_at|date:"d \\d\\e F \\d\\e Y" }}</strong>: {{ entry.mood|title }}
-                </li>
-            {% empty %}
-                <li class="list-group-item text-muted text-center">Nenhum sentimento registrado ainda.</li>
-            {% endfor %}
-        </ul>
+        <div class="collapse" id="historicoSentimentos">
+            <ul class="list-group list-group-flush">
+                {% for entry in entries %}
+                    {% with moods|dict_get:entry.mood as mood_data %}
+                        <li class="list-group-item bg-dark text-white text-center">
+                            <strong>
+                                {{ entry.created_at|date:"d \\d\\e M" }}, {{ entry.created_at|time:"H\\hi" }}
+                            </strong>:
+                            <span class="badge bg-{{ mood_data.btn }} text-dark">
+                                {{ mood_data.emoji }} {{ entry.mood|title }}
+                            </span>
+                        </li>
+                    {% endwith %}
+                {% empty %}
+                    <li class="list-group-item text-muted text-center">Nenhum sentimento registrado ainda.</li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
-</div>
 
-<!-- Bootstrap JS (opcional) -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -12,7 +12,7 @@ class DailyEntry(models.Model):
     ]
 
     mood = models.CharField(max_length=20, choices=MOOD_CHOICES)
-    created_at = models.DateField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.mood} em {self.created_at}"
